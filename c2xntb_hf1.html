@@ -2,10 +2,20 @@
 <html>
 <head>
 <meta charset=utf-8 />
-<title>CLOCK</title>
+<title>Paint</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <style>
-
+	#save{
+		width: 210px;	
+	}
+	
+	input{
+		width: 100%;	
+	}
+	
+	select{
+		width: 210px;	
+	}	
 	
 	td{
 		border:1px solid black;
@@ -104,7 +114,7 @@ function changeColor(color) {
 }
 
 function listSaved() {
-
+ $('#saved').empty();
 for (var i in localStorage) {
 
 		if (typeof localStorage.getItem(i) === 'string') {
@@ -118,19 +128,18 @@ for (var i in localStorage) {
 function loadSave() {
 	var selected = $('#saved :selected').text();
 	var pixels =  JSON.parse(localStorage.getItem(selected));
-	alert(pixels.length+' '+pixels[0].id+ ' ' +pixels[0].color);
+	//alert(pixels.length+' '+pixels[0].id+ ' ' +pixels[0].color);
 	for (var p in pixels) {
-		alert();
 		$('#' + pixels[p].id).attr('class', pixels[p].color);
 			
 	}
 }
 
 function deleteSave() {
-	location.reload();
 	var selected = $('#saved :selected').text();
 	localStorage.removeItem(selected);
 	listSaved();
+
 }
 
 window.onload = function(){
@@ -151,9 +160,9 @@ window.onload = function(){
 	<p>Színek</p>
 	<div id="currentColor"></div>
 	</div>
+	<div id="save">	
 		<input id="name"></input>
-		<button id="btnSave", onclick="save()">Mentés</button>
-	<div>	
+		<button id="btnSave", onclick="save()">Mentés</button>	
 	<p>Mentések</p>	
 		<select id="saved" size="5">
 		</select>
