@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>CLOCK</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<style>
+
+	
+	td{
+		border:1px solid black;
+		width: 20px;
+		height: 20px;
+	}
+	#currentColor{
+		border:1px solid black;
+		width: 21px;
+		height: 21px;	
+		margin-left: 2px;
+	}
+	td.black{
+		background-color:black;
+	}
+	
+	td.red, div.red{
+		background-color: red;	
+	}
+	td.green, div.green{
+		background-color: green;	
+	}
+	td.blue, div.blue{
+		background-color: blue;	
+	}
+</style>
+
+<script>
+var currentColor = 'pink';
+function createTable(selector){
+	var i, j;
+	var $table = $('<table>');
+	
+	
+	for(i=0;i<8;i++){
+		var $tr = $('<tr>');
+		for(j=0;j<8;j++){
+			$tr.append(
+				$('<td>').click(
+					function(event){
+						$(this).removeClass();
+						$(this).toggleClass(currentColor);
+					}
+				).attr('id', i + '' + j)
+			);
+		}
+		$table.append($tr);
+	}
+	
+
+
+	$(selector).append($table);
+}
+
+function createPalett(selector) {
+	var colors = ['red','green','blue']	;
+	var $colorTable = $('<table>');
+	var $tr= $('<tr>');
+		for(var c in colors){
+			var $td =  $('<td>');
+			$td.addClass(colors[c]);
+			$td.click(
+				function (event) {
+					changeColor($(this).attr('class'))
+				}			
+			);
+			$tr.append($td);
+
+	}
+	$colorTable.append($tr);
+	$(selector).append($colorTable);
+}
+
+function save() {
+	var name = $('#name').val();
+	var cells = $('#tableholder table td');
+	alert(cells.length);
+	var pixels = [];
+	for (var i in cells) {
+		var pixel = {};
+		pixel.id = cells[i].id;
+		pixel.color = cells[i].className;
+		pixels.push(pixel);		
+	}
+	
+	localStorage.setItem(name , JSON.stringify(pixels));
+	$('#saved').append(
+		$('<option>').text(name)	
+	)
+}
+
+function changeColor(color) {
+	currentColor = color;
+					$('#currentColor').removeClass();
+					$('#currentColor').toggleClass(currentColor);
+}
+
+function listSaved() {
+
+for (var i in localStorage) {
+
+		if (typeof localStorage.getItem(i) === 'string') {
+				$('#saved').append(
+		$('<option>').text(i)	
+		)
+		}
+	}
+}
+
+function loadSave() {
+	var selected = $('#saved :selected').text();
+	var pixels =  JSON.parse(localStorage.getItem(selected));
+	alert(pixels.length+' '+pixels[0].id+ ' ' +pixels[0].color);
+	for (var p in pixels) {
+		alert();
+		$('#' + pixels[p].id).attr('class', pixels[p].color);
+			
+	}
+}
+
+function deleteSave() {
+	location.reload();
+	var selected = $('#saved :selected').text();
+	localStorage.removeItem(selected);
+	listSaved();
+}
+
+window.onload = function(){
+	createTable('#tableholder');
+	createPalett('#colors');
+	listSaved();
+}
+
+//.click(function(){$(this).toggleClass('black');})
+</script>
+
+
+</head>
+<body>
+  <div id="tableholder"></div>
+  
+	<div id="colors">
+	<p>Színek</p>
+	<div id="currentColor"></div>
+	</div>
+		<input id="name"></input>
+		<button id="btnSave", onclick="save()">Mentés</button>
+	<div>	
+	<p>Mentések</p>	
+		<select id="saved" size="5">
+		</select>
+		<button id="btnLoad", onclick="loadSave()">Betöltés</button>
+		<button id="btnDelete", onclick="deleteSave()">Törlés</button>
+	</div>
+  Feladatok
+	  
+  <ol>
+	  <li>Lehessen színeket is használni a rajzoláshoz</li>
+	  <li>Lehessen menteni a rajzunkat</li>
+	  <li>Be is lehessen tölteni a rajzot (localstorage)</li>
+  </ol>
+  
+</body>
+
+</html>
