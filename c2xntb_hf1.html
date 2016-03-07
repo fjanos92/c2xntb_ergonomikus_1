@@ -5,17 +5,13 @@
 <title>Paint</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <style>
-	#save{
+	select, #save{
 		width: 210px;	
 	}
 	
 	input{
-		width: 100%;	
+		width: 203px;	
 	}
-	
-	select{
-		width: 210px;	
-	}	
 	
 	td{
 		border:1px solid black;
@@ -28,6 +24,7 @@
 		height: 21px;	
 		margin-left: 2px;
 	}
+
 	td.black{
 		background-color:black;
 	}
@@ -44,11 +41,10 @@
 </style>
 
 <script>
-var currentColor = 'pink';
+var currentColor = 'black';
 function createTable(selector){
 	var i, j;
 	var $table = $('<table>');
-	
 	
 	for(i=0;i<8;i++){
 		var $tr = $('<tr>');
@@ -56,8 +52,14 @@ function createTable(selector){
 			$tr.append(
 				$('<td>').click(
 					function(event){
-						$(this).removeClass();
-						$(this).toggleClass(currentColor);
+						if ($(this).attr('class') == undefined || $(this).attr('class') == currentColor) {
+							$(this).toggleClass(currentColor);
+						}
+						else{
+							$(this).removeClass();
+							$(this).addClass(currentColor);
+						}
+					
 					}
 				).attr('id', i + '' + j)
 			);
@@ -65,13 +67,11 @@ function createTable(selector){
 		$table.append($tr);
 	}
 	
-
-
 	$(selector).append($table);
 }
 
 function createPalett(selector) {
-	var colors = ['red','green','blue']	;
+	var colors = ['red','green','blue','black']	;
 	var $colorTable = $('<table>');
 	var $tr= $('<tr>');
 		for(var c in colors){
@@ -91,26 +91,29 @@ function createPalett(selector) {
 
 function save() {
 	var name = $('#name').val();
-	var cells = $('#tableholder table td');
-	alert(cells.length);
+	if (name == '') {
+		alert('Név mező üres!');
+	}
+	else{
+	var $trs = $('#tableholder table td');
 	var pixels = [];
-	for (var i in cells) {
+	for (var i in $trs) {
 		var pixel = {};
-		pixel.id = cells[i].id;
-		pixel.color = cells[i].className;
+		pixel.id = $trs[i].id;
+		pixel.color = $trs[i].className;
 		pixels.push(pixel);		
 	}
 	
 	localStorage.setItem(name , JSON.stringify(pixels));
-	$('#saved').append(
-		$('<option>').text(name)	
-	)
+	listSaved();
+
+	}
 }
 
 function changeColor(color) {
 	currentColor = color;
-					$('#currentColor').removeClass();
-					$('#currentColor').toggleClass(currentColor);
+	$('#currentColor').removeClass();
+	$('#currentColor').attr('class', currentColor);
 }
 
 function listSaved() {
@@ -128,7 +131,6 @@ for (var i in localStorage) {
 function loadSave() {
 	var selected = $('#saved :selected').text();
 	var pixels =  JSON.parse(localStorage.getItem(selected));
-	//alert(pixels.length+' '+pixels[0].id+ ' ' +pixels[0].color);
 	for (var p in pixels) {
 		$('#' + pixels[p].id).attr('class', pixels[p].color);
 			
@@ -148,7 +150,6 @@ window.onload = function(){
 	listSaved();
 }
 
-//.click(function(){$(this).toggleClass('black');})
 </script>
 
 
@@ -160,22 +161,16 @@ window.onload = function(){
 	<p>Színek</p>
 	<div id="currentColor"></div>
 	</div>
-	<div id="save">	
+	<div id="save">
+		<p>Mentések</p>		
 		<input id="name"></input>
 		<button id="btnSave", onclick="save()">Mentés</button>	
-	<p>Mentések</p>	
+	
 		<select id="saved" size="5">
 		</select>
 		<button id="btnLoad", onclick="loadSave()">Betöltés</button>
 		<button id="btnDelete", onclick="deleteSave()">Törlés</button>
 	</div>
-  Feladatok
-	  
-  <ol>
-	  <li>Lehessen színeket is használni a rajzoláshoz</li>
-	  <li>Lehessen menteni a rajzunkat</li>
-	  <li>Be is lehessen tölteni a rajzot (localstorage)</li>
-  </ol>
   
 </body>
 
