@@ -46,9 +46,11 @@ function createTable(selector){
 	var i, j;
 	var $table = $('<table>');
 	
-	for(i=0;i<8;i++){
+	for(i=0;i<8;i++)
+    {
 		var $tr = $('<tr>');
-		for(j=0;j<8;j++){
+		for(j=0;j<8;j++)
+        {
 			$tr.append(
 				$('<td>').click(
 					function(event){
@@ -59,7 +61,6 @@ function createTable(selector){
 							$(this).removeClass();
 							$(this).addClass(currentColor);
 						}
-					
 					}
 				).attr('id', i + '' + j)
 			);
@@ -83,7 +84,6 @@ function createPalett(selector) {
 				}			
 			);
 			$tr.append($td);
-
 	}
 	$colorTable.append($tr);
 	$(selector).append($colorTable);
@@ -95,18 +95,17 @@ function save() {
 		alert('Név mező üres!');
 	}
 	else{
-	var $trs = $('#tableholder table td');
+	var $tds = $('#tableholder table td');
 	var pixels = [];
-	for (var i in $trs) {
-		var pixel = {};
-		pixel.id = $trs[i].id;
-		pixel.color = $trs[i].className;
+	for (var i in $tds) {
+		var pixel = {
+            id : $tds[i].id,
+            color: $tds[i].className
+        };
 		pixels.push(pixel);		
 	}
-	
 	localStorage.setItem(name , JSON.stringify(pixels));
-	listSaved();
-
+	loadList();
 	}
 }
 
@@ -116,7 +115,7 @@ function changeColor(color) {
 	$('#currentColor').attr('class', currentColor);
 }
 
-function listSaved() {
+function loadList() {
  $('#saved').empty();
 for (var i in localStorage) {
 
@@ -132,22 +131,24 @@ function loadSave() {
 	var selected = $('#saved :selected').text();
 	var pixels =  JSON.parse(localStorage.getItem(selected));
 	for (var p in pixels) {
-		$('#' + pixels[p].id).attr('class', pixels[p].color);
-			
+		$('#' + pixels[p].id).attr('class', pixels[p].color);	
 	}
 }
 
 function deleteSave() {
 	var selected = $('#saved :selected').text();
 	localStorage.removeItem(selected);
-	listSaved();
-
+	loadList();
 }
 
 window.onload = function(){
 	createTable('#tableholder');
 	createPalett('#colors');
-	listSaved();
+    $('#btnSave').click(function(){save()});
+    $('#btnLoad').click(function(){loadSave()});
+    $('#btnDelete').click(function(){deleteSave()});
+
+	loadList();
 }
 
 </script>
@@ -164,12 +165,12 @@ window.onload = function(){
 	<div id="save">
 		<p>Mentések</p>		
 		<input id="name"></input>
-		<button id="btnSave", onclick="save()">Mentés</button>	
+		<button id="btnSave">Mentés</button>	
 	
 		<select id="saved" size="5">
 		</select>
-		<button id="btnLoad", onclick="loadSave()">Betöltés</button>
-		<button id="btnDelete", onclick="deleteSave()">Törlés</button>
+		<button id="btnLoad">Betöltés</button>
+		<button id="btnDelete">Törlés</button>
 	</div>
   
 </body>
