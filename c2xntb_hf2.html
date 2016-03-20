@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Random</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<style>
+
+</style>
+
+<script>
+
+function register() {
+	$.get( "http://api.gamer365.hu/numgame/register", function( data ) {
+  	if (data.status === 'ok') {
+  		Token = data.token;
+  		$('#lblToken').html('Sikeres regisztráció<br>(token: '+Token+')');
+  		
+  	}
+  
+});
+}
+
+function guess() {
+	var Guess = $('#txtGuess').val();
+	$.post( "http://api.gamer365.hu/numgame/guess", { token: Token, value: Guess } )
+	.done(function( data ) {
+	if (data.answer == 'win') {
+		alert("Your winner!");
+	}
+
+  	$('#answer').html(data.answer );
+  });
+}
+
+window.onload = function(){
+	$('#btnRegister').click(function () { register();});
+	$('#btnGuess').click(function () { guess();});
+}
+
+</script>
+
+
+</head>
+<body>
+  
+  <p id="lblToken">Nem regisztrált felhasználó.</p>
+  <button id="btnRegister">Regisztráció</button>
+	
+	<div id="Game">
+  <input id="txtGuess">
+  <button id="btnGuess">Tippelés</button>
+  <p id="answer"></p>
+  </div>	
+  
+	
+</body>
+
+</html>
