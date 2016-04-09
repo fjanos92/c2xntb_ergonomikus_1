@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<script>
+    function Digits(){
+        zero: [[0,270],[180,270],[90,180],[90,180],[0,90],[90,180]];
+        one: [[225, 225], [90, 270],[225, 225], [90, 270],[225, 225], [90, 270]];
+        two: [[0,0],[180,270],[0,270],[180,270],[0,0], [90, 180]]; 
+    }
+    
+    function Clock(ctx, x, y, r){
+        var context = ctx;
+        var posX = x;
+        var posY = y;
+        var radius = r;
+    
+        var smallAng; 
+        var bigAng; 
+    
+   this.setAngles = function (small, big){
+        smallAng = small*(Math.PI/180);
+        bigAng = big*(180/Math.PI);
+    }
+    
+    this.draw = function(){
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2*Math.PI);
+        ctx.stroke();
+         
+        drawHand(bigAng, radius*0.7, 1);
+        drawHand(smallAng, radius*0.5, 1);
+    }
+    
+    function drawHand(theta, length, width) {
+        ctx.moveTo(x,y);
+        ctx.lineTo(x + length * Math.cos(theta), y + length * Math.sin(theta));
+        ctx.stroke();
+    }
+}
+
+function drawDigit(ctx, x, y, distX, distY, radius){
+    var sX = x+radius;
+    var sY = y+radius;
+    var clocks = [];
+    for(var i=0; i<3; i++)
+    {   
+        for(var j=0; j<2; j++)
+        {  
+            clock = new Clock(ctx, sX+j*distX, sY+i*distY, radius);
+            //alert((x+i*distX) +" "+ (y+j*distY)+" "+ radius);
+            clocks.push(clock);
+        } 
+    }
+    return clocks;
+}
+
+ window.onload = function(){
+     var canvas = document.getElementById("canvas");
+     var ctx = canvas.getContext("2d");
+     var digits = [];
+     var dig =  [[0,45],[45,90],[90,115],[90,180],[0,90],[90,180]];
+     
+     for(var i= 0; i< 4; i++ )
+     {
+         digit = drawDigit(ctx, i*80, 0, 40, 40, 20);
+         for(var j=0; j<6; j++)
+         {
+             digit[j].setAngles(dig[j][0], dig[j][1]);
+         }
+         
+         digits.push(digit);
+     }
+     
+     for(var i=0; i<digits.length; i++)
+     {
+         for(var j=0; j<digits[i].length; j++)
+         {
+             digits[i][j].draw();
+         }
+     }
+
+     
+ }
+
+</script>
+
+<body>
+    <canvas id="canvas" width="500" height="500">
+        //style="background-color:#333"
+    </canvas>
+</body>
+
+</html>
