@@ -20,14 +20,17 @@ num.push([[0, 270], [180, 270], [0, 90], [180, 270], [0, 90], [90, 180]]);
 //nine
 num.push([[0, 270], [180, 270], [0, 90], [180, 270], [0, 0], [90, 180]]);
 
+
+
 function Clock(ctx, x, y, r) {
 	var context = ctx;
-	var posX = x;
-	var posY = y;
+	//var posX = x;
+	//var posY = y;
 	var radius = r;
 	var smallAng;
 	var bigAng;
-	var blink = false;
+	var visible = true;
+    var blink = false;
 
 	this.setAngles = function (small, big) {
 		if(small==225 && big==225) {
@@ -41,43 +44,39 @@ function Clock(ctx, x, y, r) {
 	}
 
 	this.draw = function () {
-		var show = true;
 		ctx.translate(x, y);
 		
 		if(blink){
-			show = !show;
+			visible = !visible;
 		}
 		
 		drawFace()
-		if(show){
+		if(visible){
 			drawHand(bigAng, radius, radius * 0.1);
 			drawHand(smallAng, radius * 0.7, radius * 0.1);
 		}
-		
-		
-				
-		
 		
 		ctx.translate(-x, -y);
 	}
 
 	function drawFace() {
 		ctx.beginPath();
-		ctx.arc(0, 0, radius, 0, 2 * Math.PI);
-		ctx.fillStyle = 'white';
+		ctx.arc(0, 0 , radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'white';
 		ctx.fill();
 		ctx.lineWidth = radius * 0.05;
 		ctx.stroke();
 		ctx.beginPath();
 		ctx.arc(0, 0, radius * 0.05, 0, 2 * Math.PI);
-		ctx.stroke();
+		ctx.fillStyle = 'black';
+		ctx.fill();
+        ctx.stroke();   
 	}
 
 	function drawHand(pos, length, width) {
 		ctx.beginPath();
 		ctx.lineWidth = width;
 
-		//ctx.translate(x, y);
 		ctx.moveTo(0, 0);
 		ctx.rotate(90 * (Math.PI / 180));
 		ctx.rotate(-pos);
@@ -85,7 +84,6 @@ function Clock(ctx, x, y, r) {
 		ctx.stroke();
 		ctx.rotate(pos);
 		ctx.rotate(-90 * (Math.PI / 180));
-		//ctx.translate(-x,-y);
 	}
 }
 
@@ -96,7 +94,6 @@ function createDigit(ctx, x, y, distX, distY, radius) {
 	for (var i = 0; i < 3; i++) {
 		for (var j = 0; j < 2; j++) {
 			clock = new Clock(ctx, sX + j * distX, sY + i * distY, radius);
-			//alert((x+i*distX) +" "+ (y+j*distY)+" "+ radius);
 			clocks.push(clock);
 		}
 	}
@@ -124,7 +121,6 @@ function main(ctx) {
 }
 
 function setClock(ctx, digits) {
-	//alert('wat');
 	var date = new Date();
 	var hourD1 = (date.getHours() - (date.getHours() % 10)) / 10;
 	var hourD2 = date.getHours() % 10;
@@ -137,17 +133,11 @@ function setClock(ctx, digits) {
 	numbers.push(minuteD1);
 	numbers.push(minuteD2);
 
-	//var second = date.getSeconds();
-
-	//alert(hourD1+" "+hourD2+" "+minuteD1+" "+minuteD2);
-
 	for (var i = 0; i < digits.length; i++) {
 		setDigit(ctx, digits[i], numbers[i])
 	}
 
 	repaint(ctx, digits);
-
-	//setTimeout(setClock, 1000);
 }
 
 function setDigit(ctx, digit, n) {
@@ -160,5 +150,4 @@ window.onload = function () {
 	var canvas = document.getElementById("canvas");
 	var ctx = canvas.getContext("2d");
 	main(ctx);
-
 }
