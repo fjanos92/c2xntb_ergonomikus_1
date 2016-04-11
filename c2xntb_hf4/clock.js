@@ -1,3 +1,6 @@
+var refreshTime = 200; 
+var n=0;
+var m=0;
 var num = [];
 //zero
 num.push([[0, 270], [180, 270], [90, 270], [90, 270], [0, 90], [90, 180]]);
@@ -20,41 +23,56 @@ num.push([[0, 270], [180, 270], [0, 90], [180, 270], [0, 90], [90, 180]]);
 //nine
 num.push([[0, 270], [180, 270], [0, 90], [180, 270], [0, 0], [90, 180]]);
 
-
+function rad(deg){
+    return deg* (Math.PI / 180);
+}
 
 function Clock(ctx, x, y, r) {
 	var context = ctx;
-	//var posX = x;
-	//var posY = y;
-	var radius = r;
-	var smallAng;
-	var bigAng;
-	var visible = true;
-    var blink = false;
 
-	this.setAngles = function (small, big) {
-		if(small==225 && big==225) {
-			blink = true;
-			}
-		else{
-			blink = false;
-		}
-		smallAng = (small) * (Math.PI / 180);
-		bigAng = (big) * (Math.PI / 180);
+	var radius = r;
+	var smallAng = rad(135); /*10h */
+    var bigAng = rad(22.5);  /*10m */
+    var smallAngDest, bigAngDest;
+    var smallStep, bigStep ;
+    var color = 'white';
+
+	this.setTime = function (small, big) {
+        visible = true;
+       
+		smallAngDest = rad(small);
+		bigAngDest = rad(big) ;
+        
+        smallStep = Math.abs(smallAngDest-smallAng)/10;
+        bigStep = Math.abs(bigAngDest-bigAng)/10;
 	}
 
+    this.setColor = function(c){
+        color = c;
+    }
+    
 	this.draw = function () {
+		
+        if(visible && smallAng < smallAngDest){
+            smallAng +=smallStep;
+        }
+        else if(visible && smallAng > smallAngDest){
+            smallAng -=smallStep;
+        }
+        
+        if(visible && bigAng < bigAngDest){
+            bigAng +=bigStep;
+        }
+        else if(visible && bigAng > bigAngDest){
+            bigAng -=bigStep;
+        }
+        
 		ctx.translate(x, y);
-		
-		if(blink){
-			visible = !visible;
-		}
-		
+        
 		drawFace()
-		if(visible){
-			drawHand(bigAng, radius, radius * 0.1);
-			drawHand(smallAng, radius * 0.7, radius * 0.1);
-		}
+		drawHand(bigAng, radius, radius * 0.1);
+    	drawHand(smallAng, radius * 0.7, radius * 0.1);
+		
 		
 		ctx.translate(-x, -y);
 	}
@@ -62,7 +80,7 @@ function Clock(ctx, x, y, r) {
 	function drawFace() {
 		ctx.beginPath();
 		ctx.arc(0, 0 , radius, 0, 2 * Math.PI);
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = color
 		ctx.fill();
 		ctx.lineWidth = radius * 0.05;
 		ctx.stroke();
@@ -78,12 +96,12 @@ function Clock(ctx, x, y, r) {
 		ctx.lineWidth = width;
 
 		ctx.moveTo(0, 0);
-		ctx.rotate(90 * (Math.PI / 180));
+		ctx.rotate(rad(90));
 		ctx.rotate(-pos);
 		ctx.lineTo(0, -length);
 		ctx.stroke();
 		ctx.rotate(pos);
-		ctx.rotate(-90 * (Math.PI / 180));
+		ctx.rotate(rad(-90));
 	}
 }
 
@@ -116,8 +134,7 @@ function main(ctx) {
 		digits.push(digit);
 	}
 	
-	setInterval(function(){ setClock(ctx, digits)}, 1000);
-	
+	setInterval(function(){ setClock(ctx, digits)}, refreshTime);	
 }
 
 function setClock(ctx, digits) {
@@ -136,13 +153,15 @@ function setClock(ctx, digits) {
 	for (var i = 0; i < digits.length; i++) {
 		setDigit(ctx, digits[i], numbers[i])
 	}
-
+    
 	repaint(ctx, digits);
 }
 
 function setDigit(ctx, digit, n) {
+    var color = 'gray';
 	for (var i = 0; i < digit.length; i++) {
-		digit[i].setAngles(num[n][i][0], num[n][i][1]);
+		digit[i].setTime(num[n][i][0], num[n][i][1]);
+       
 	}
 }
 
