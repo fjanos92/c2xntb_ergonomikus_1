@@ -4,265 +4,44 @@
 <meta charset=utf-8 />
 <title>Paint</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="mario.js"></script>
 <style>
-	select, #save{
-		width: 210px;	
-	}
-	
-	input{
-		width: 203px;	
-	}
-	
+
+* {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
 	td{
 		border:1px solid black;
-		width: 40px;
-		height: 40px;
+		width: 80px;
+		height: 80px;
 	}
-	#currentColor{
-		border:1px solid black;
-		width: 21px;
-		height: 21px;	
-		margin-left: 2px;
+	
+	table {
+		margin: 0 auto;
 	}
 
 	td.black{
 		background-color:black;
 	}
 	
-	td.red, div.red{
-		background-color: red;	
-	}
-	td.green, div.green{
-		background-color: green;	
-	}
-	td.blue, div.blue{
-		background-color: blue;	
-	}
 	.player{
 		background-image: url('content/sprite.png');
-		background-size: cover;
+		background-size: contain;
 	}
+	
 </style>
 
-<script>
-function Player(X,Y){
-	this.x = X;
-	this.y = Y;
-			console.log("x="+this.x+",y="+this.y);
-
-}
-Player.prototype.draw = function (){
-		$('[x="'+this.x+'"][y="'+this.y+'"]').addClass('player');
-	}
-
-Player.prototype.move = function(dx,dy){
-
-	var nx =parseInt(this.x) + parseInt(dx);
-	var ny =parseInt(this.y) + parseInt(dy);
-	
-	console.log(dx , dy, nx, ny);
-	if(nx >= 0 && nx <8 && ny >= 0 && ny <8){
-		
-	
-	this.x = nx;
-	this.y= ny;
-		
-}	
-		this.draw();
-	}
-
-var player= new Player(0,0);
-var currentColor = 'black';
-function createTable(selector){
-	var i, j;
-	var $table = $('<table>');
-	
-	for(i=0;i<8;i++)
-    {
-		var $tr = $('<tr>');
-		for(j=0;j<8;j++)
-        {
-			$tr.append(
-				$('<td>').click(
-					function(event){
-						if ($(this).attr('class') == undefined || $(this).attr('class') == currentColor) {
-							$(this).toggleClass(currentColor);
-						}
-						else{
-							$(this).removeClass();
-							$(this).addClass(currentColor);
-						}
-					}
-				).attr('id', i + '' + j).attr('x', j).attr('y',i)
-			);
-		}
-		$table.append($tr);
-	}
-	
-	$(selector).append($table);
-}
-
-function createPalett(selector) {
-	var colors = ['red','green','blue','black']	;
-	var $colorTable = $('<table>');
-	var $tr= $('<tr>');
-		for(var c in colors){
-			var $td =  $('<td>');
-			$td.addClass(colors[c]);
-			$td.click(
-				function (event) {
-					changeColor($(this).attr('class'))
-				}			
-			);
-			$tr.append($td);
-	}
-	$colorTable.append($tr);
-	$(selector).append($colorTable);
-}
-
-function save() {
-	var name = $('#name').val();
-	if (name == '') {
-		alert('Név mező üres!');
-	}
-	else{
-	var $tds = $('#tableholder table td');
-	var pixels = [];
-	for (var i in $tds) {
-		var pixel = {
-            id : $tds[i].id,
-            color: $tds[i].className
-        };
-		pixels.push(pixel);		
-	}
-	localStorage.setItem(name , JSON.stringify(pixels));
-	loadList();
-	}
-}
-
-function changeColor(color) {
-	currentColor = color;
-	$('#currentColor').removeClass();
-	$('#currentColor').attr('class', currentColor);
-}
-
-function loadList() {
- $('#saved').empty();
-for (var i in localStorage) {
-
-		if (typeof localStorage.getItem(i) === 'string') {
-				$('#saved').append(
-		$('<option>').text(i)	
-		)
-		}
-	}
-}
-
-function loadSave() {
-	var selected = $('#saved :selected').text();
-	var pixels =  JSON.parse(localStorage.getItem(selected));
-	for (var p in pixels) {
-		$('#' + pixels[p].id).attr('class', pixels[p].color);	
-	}
-}
-
-function deleteSave() {
-	var selected = $('#saved :selected').text();
-	localStorage.removeItem(selected);
-	loadList();
-}
-
-	
-function initPlayer(x,y){
-	player = new Player(x,y);
-	$('[x="'+x+'"][y="'+y+'"]').addClass('player');
-}
-
-function cteateContorls(selector){
-	var dir = {};
-	
-	dir.left = { x : -1, y : 0};
-	dir.right = { x : 1, y : 0};
-	dir.up = { x : 0, y : -1};
-	dir.down = { x : 0, y : 1 };
-	
-	
-	var directions = ['up','down','left','right'];
-	var dirs = ['up','down','left','right'];
-	var $colorTable = $('<table>');
-	var $tr= $('<tr>');
-		for(var d in dir){
-			var $td =  $('<td>');
-			console.log(d);
-			$td.addClass(d);
-			$td.html(d);
-			$td.attr('x', dir[d].x);
-			$td.attr('y', dir[d].y);
-			
-			
-			$td.click(
-				function (event) {
-					var dy = $(this).attr('y');
-					var dx = $(this).attr('x');
-					move(dx,dy);
-					
-				}			
-			);
-			$tr.append($td);
-	}
-	$colorTable.append($tr);
-	$(selector).append($colorTable);
-}
-
-function move(x,y){
-	$('td').each(function (){
-		$(this).removeClass('player');
-	});
-
-	player.move(x,y);
-}
-	
-	
 
 
-window.onload = function(){
-	createTable('#tableholder');
-	createPalett('#colors');
-	cteateContorls('#controls');
-    $('#btnSave').click(function(){save()});
-    $('#btnLoad').click(function(){loadSave()});
-    $('#btnDelete').click(function(){deleteSave()});
-	
-	initPlayer(0,2);
-	loadList();
-}
-
-</script>
 
 
 </head>
 <body>
   <div id="tableholder"></div>
-  
-	<div id="colors">
-	<p>Színek</p>
-	
-	<p>Irányítás</p>
-	<div id="controls"></div>
-	
-	<div id="currentColor"></div>
-	</div>
-	<div id="save">
-		<p>Mentések</p>		
-		<input id="name"></input>
-		<button id="btnSave">Mentés</button>	
-	
-		<select id="saved" size="5">
-		</select>
-		<button id="btnLoad">Betöltés</button>
-		<button id="btnDelete">Törlés</button>
-	</div>
-  
+
 </body>
 
 </html>
