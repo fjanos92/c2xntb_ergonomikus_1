@@ -1,0 +1,31 @@
+Labirintusjáték
+
+0. A játékhoz tartozó képek az alábbi linkrõl tölthetõek le http://music.elvis.hu/maze/assets.zip
+- az assetek 16x16 pixel méretûek
+- a floor az 32x32 pixel méretû, az legyen az egész játéktér önálló háttere
+
+1. Az alkalmazás egy távoli helyrõl töltse le és jelenítse meg a játék térképét! (http://music.elvis.hu/maze/gen.php)
+- a térkép json formában érkezik
+- a térkép mérete: 21x21
+- a "maze" adattag a térkép, melyben a 0 jelöli a falat, az 1 pedig a bejárható területet
+- a "start" jelenti a játékos kezdõpozícióját
+- az "end" a célt, ahova a játékosnak el kell jutnia
+- a "gems" a pályán levõ kincseket jelölik, melyeket a játékos felvehet
+
+2. A játékos tudjon mozogni a pályán, amennyiben elér a kijárathoz, üzenjünk neki és kezdõdjön a játék elõrõl!
+- a mozgatás történjen button elemekre kattintással 
+- vagy a kurzor gombokkal,
+
+3. Mérje a játék idejét / a lépések számát!
+
+4. A játékos, amikor egy kincs fölé érkezik vengye azt fel automatikusan, amit szintén számoljon!
+
+5. A mért értékeket a játék végén jelenítse meg!
+
+6. A mért értkeket folyamatosan tüntesse fel a játéktér mellett/alatt!
+
+7. A játékban fedje el a játékostól távolabb esõ mezõket (fog of war)!
+- A játékos és a körülötte levõ 8 mezõ 100%-osan látszódik
+- A az e körül levõ mezõk 50%-osak
+- Az ezektõl még egyel távolabbiak 25%-osan látszódnak
+- A többi mezõ nem látszódik

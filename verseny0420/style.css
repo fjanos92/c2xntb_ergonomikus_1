@@ -1,0 +1,54 @@
+* {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0 auto;
+	background-image: url('content/floor.png');
+}
+
+
+
+	td{
+		width: 21px;
+		height: 21px;
+	}
+	
+	table {
+		margin: 0 auto;
+	}
+
+	td.black{
+		background-color:black;
+	}
+	
+	.player{
+		background-image: url('content/player.gif');
+		background-size: contain;
+	}
+	
+	.wall{
+		background-image: url('content/wall.png');
+	}
+	
+	.gem{
+		background-image: url('content/gem.gif');
+	}
+	.exit{
+		background-image: url('content/door.gif');
+	}
+	[opa="1"]{
+		opacity: 1;
+	}
+	[opa="0.5"]{
+		opacity: 0.5;
+	}
+	[opa="0.25"]{
+		opacity: 0.25;
+	}
+	[opa="0"]{
+		opacity: 0;
+	}
