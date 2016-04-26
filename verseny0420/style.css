@@ -17,13 +17,6 @@ table {
 		height: 21px;
 	}
 	
-	table {
-		margin: 0 auto;
-	}
-
-	td.black{
-		background-color:black;
-	}
 	
 	.player{
 		background-image: url('content/player.gif');
@@ -42,13 +35,20 @@ table {
 	}
 	[opa="1"]{
 		opacity: 1;
+
 	}
 	[opa="0.5"]{
 		opacity: 0.5;
+		        background-color: black;
+
 	}
 	[opa="0.25"]{
 		opacity: 0.25;
+		        background-color: black;
+
 	}
 	[opa="0"]{
 		opacity: 0;
+		        background-color: black;
+
 	}
